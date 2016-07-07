@@ -1,3 +1,6 @@
+import cv2
+from matplotlib import pyplot as plt
+from preprocessing_image import image_gray, image_bin_adaptive, image_otsu_treshold
 PATH = './images/test.png'
 
 def load_image(path):
@@ -8,7 +11,9 @@ def display_image(image):
     plt.show()
 
 def main():
-    img = load_image(PATH)
+    img_core = load_image(PATH)
+    img = image_bin_adaptive(image_gray(img_core))
+    img = image_otsu_treshold(img)
     display_image(img)
 
 if __name__ == "__main__":
