@@ -1,7 +1,7 @@
 import cv2
 from matplotlib import pyplot as plt
-from preprocessing_image import image_gray, image_bin_adaptive, image_otsu_treshold, remove_noise
-PATH = './images/test.png'
+from preprocessing_image import image_gray, image_bin_adaptive, image_otsu_treshold, remove_noise, closing
+PATH = './images/test.jpg'
 
 def load_image(path):
     return cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2RGB)
@@ -14,8 +14,12 @@ def main():
     img_core = load_image(PATH)
     img = image_bin_adaptive(image_gray(img_core))
     img = image_otsu_treshold(img)
-    img = remove_noise(img)
-    display_image(img)
+    cimg = closing(img)
+    plt.subplot(121)
+    plt.imshow(img, 'gray')
+    plt.subplot(122)
+    plt.imshow(cimg, 'gray')
+    plt.show()
 
 if __name__ == "__main__":
     main()

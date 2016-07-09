@@ -30,3 +30,9 @@ def remove_noise(binary_image):
     ret_val = invert(ret_val)
     ret_val = erode(dilate(binary_image, 3), 3)
     return ret_val
+
+def closing(binary_image):
+    ret_val = dilate(erode(binary_image, 1), 1)
+    ret_val = invert(ret_val)
+    ret_val = dilate(erode(binary_image, 1), 1)
+    return ret_val
