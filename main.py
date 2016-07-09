@@ -1,7 +1,7 @@
 import cv2
 from matplotlib import pyplot as plt
 from preprocessing_image import image_gray, image_bin_adaptive, image_otsu_treshold, remove_noise, closing
-PATH = './images/test.jpg'
+PATH = './images/test2.jpg'
 
 def load_image(path):
     return cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2RGB)
