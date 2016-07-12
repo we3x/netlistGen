@@ -45,14 +45,10 @@ def merage_contours(borders):
         x1, y1, w1, h1 = borders[i]
         for j in range(len(borders)):
             x2, y2, w2, h2 = borders[j]
-            if(x1< x2 and x1 + w1 > x2 and y1 + h1 > y2 and y1<y2):
-                w1 = x2 - x1 + w2
-                borders[j] = [0,0,0,0]
-        borders[i] = x1,y1,w1,w2
+            if(x1< x2 and x1 + w1 > x2 and y1 < y2 and y1 - h1 < y2 - h2 and x1 + w1 < x2 + w2):
 
-    for border in borders:
-        if (border != [0,0,0,0]):
-            region_borders.append(border)
+                w1 = x2 - x1 + w2
+        region_borders.append([x1, y1, w1, h1])
 
     return region_borders
 
