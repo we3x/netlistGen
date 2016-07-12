@@ -7,9 +7,9 @@ class TooHigh(Exception):
 	def __init__(self):
 		pass
 
-class EigenFaceModel(object):
+class EigenComponentModel(object):
 	"""
-	Class for Eigen Face model
+	Class for Eigen Component model
 	"""
 
 	def __init__(self, images, labels):
@@ -24,7 +24,7 @@ class EigenFaceModel(object):
 		self.model = cv2.createEigenFaceRecognizer()
 		self.model.train(images, np.array(labels))
 
-	def get_cv2_EigenFaceRecognizer(self):
+	def get_cv2_EigenComponentRecognizer(self):
 		return self.model
 
 	def get_mean(self):
@@ -46,40 +46,40 @@ class EigenFaceModel(object):
 		return vectors.reshape(vectors.shape[0], vectors.shape[1]).transpose()
 
 
-	def project_face(self, face):
+	def project_component(self, component):
 		"""
-		Projects face onto eigenspace
+		Projects component into eigenspace
 
-		face: face image to be projected
+		component: component image to be projected
 
-		returns: projected vector (face)
+		returns: projected vector (component)
 		"""
 		mean = self.get_mean()
-		#print face.shape
-		face = reshape_face(face)
+		#print component.shape
+		component = reshape_component(component)
 		vectors = self.get_eigenvectors()
 		c = []
 		for v in vectors:
-			print "Face sha[e " + str(face.shape)
+			print "Component sha[e " + str(component.shape)
 			print "mean shape " + str(mean.shape)
-			c.append(v.dot(face-mean))
+			c.append(v.dot(component - mean))
 		return np.array(c)
 
-	def get_scores(self, face, threshold, training=None):
+	def get_scores(self, component, threshold, training=None):
 		"""
-		Get all scores for given face
+		Get all scores for given component
 
-		face: width*height-dimensional vector which represents face
+		component: width*height-dimensional vector which represents component
 		training: training set of images (reshaped)
 
 		returns: list of scores for each image in training set. NOTE: list is ordered like images in training set
 		"""
 		distances = []
-		f = self.project_face(face)
+		f = self.project_component(component)
 		if training == None:
 			training = self.images
 		for img in training:
-			t = self.project_face(img)
+			t = self.project_component(img)
 			distances.append(np.sqrt(np.sum((f-t)**2)))
 		scores = []
 		for d in distances:
@@ -88,18 +88,18 @@ class EigenFaceModel(object):
 			scores.append(np.log(threshold - d) - np.log(threshold))
 		return scores
 
-	def score(self, face, ttt, threshold):
+	def score(self, component, ttt, threshold):
 		"""
-		Scores face from training set
+		Scores component from training set
 
-		face: reshaped vector which represents face
-		ttt: face to compare with (as images/matrices)
+		component: reshaped vector which represents component
+		ttt: component to compare with (as images/matrices)
 
 		returns: score (logarithm of probability)
 
 		"""
-		f = self.project_face(face)
-		t = self.project_face(ttt)
+		f = self.project_component(component)
+		t = self.project_component(ttt)
 		print "Calculating distance...."
 		d = np.sqrt(np.sum((f-t)**2))
 		print "Distance: " + str(d)
@@ -109,10 +109,10 @@ class EigenFaceModel(object):
 
 	def score_projected(self, f, t, threshold):
 		"""
-		Scores projected face from training set of projected faces
+		Scores projected component from training set of projected components
 
-		f: projected face (using project_face(...) function)
-		t: face to compare with (projected)
+		f: projected component (using project_component(...) function)
+		t: component to compare with (projected)
 
 		returns: score (logarithm of probability)
 
@@ -124,21 +124,21 @@ class EigenFaceModel(object):
 		return np.log(threshold - d) - np.log(threshold)
 
 
-def load_face(path):
+def load_component(path):
 	"""
-	Loads face as matrix
+	Loads component as matrix
 
-	returns: Matrix which represents grayscale loaded images (face)
+	returns: Matrix which represents grayscale loaded images (component)
 	"""
 	return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 
-def reshape_face(face):
+def reshape_component(component):
 	"""
-	Reshapes face as array
+	Reshapes component as array
 
 	returns: reshaped numpy.array (r*c)
 	"""
-	if len(face.shape) == 1:
-		return face
-	r,c = face.shape
-	return face.reshape(r*c)
+	if len(component.shape) == 1:
+		return component
+	r,c = component.shape
+	return component.reshape(r*c)
