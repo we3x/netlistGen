@@ -72,6 +72,7 @@ def select_roi(image_orig, image_bin):
     sorted_regions = []
     regions_dic = {}
     region_borders = []
+    regions = []
 
     for contour in contours:
         x,y,w,h = cv2.boundingRect(contour)
@@ -87,10 +88,11 @@ def select_roi(image_orig, image_bin):
     for x,y,w,h in region_borders:
         region = image_bin[y:y+h,x:x+w]
         regions_dic[x] = region
+        regions.append(region)
         cv2.rectangle(image_orig,(x,y),(x+w,y+h),(255,0,0),1)
 
 
     sorted_regions_dic = collections.OrderedDict(sorted(regions_dic.items()))
     sorted_regions = sorted_regions_dic.values()
 
-    return image_orig, sorted_regions
+    return image_orig, sorted_regions, regions
