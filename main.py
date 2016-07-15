@@ -1,7 +1,7 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-from preprocessing_image import image_bin, image_gray, invert, dilate, select_roi, clear_component
+from preprocessing_image import image_bin, image_gray, invert, dilate, select_roi, clear_component, search_line
 from recognize import EigenComponentModel
 PATH = './images/tests/test5.png'
 
@@ -32,8 +32,21 @@ def main():
     for x,y,w,h in regions:
         img_core_bin_clear = clear_component(img_core_bin_clear, x, y, w, h)
 
+    display_image(img_core_bin_clear)
+    dots = []
+    x = img_core_bin_clear.shape[0]
+    y = img_core_bin_clear.shape[1]
+    for a in range(x):
+        for b in range(y):
+            if(img_core_bin_clear[a][b] == 0):
+                dots.append((a,b))
+                dots.append(search_line(img_core_bin_clear, a, b))
 
-    display_image(img_core_bin)
+    for x,y in dots:
+        img_core_bin_clear[x][y] = 0
+
+
+    display_image(img_core_bin_clear)
 
 if __name__ == "__main__":
     main()

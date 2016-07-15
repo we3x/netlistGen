@@ -73,6 +73,52 @@ def clear_component(img, x, y, w, h):
             img[b+j][i+a] = 255
     return img;
 
+def search_line(img, x,y):
+    if(img[x+1][y] != 255):
+        img[x][y-1] = 255
+        img[x][y+1] = 255
+        img[x-1][y] = 255
+        img[x-1][y+1] = 255
+        img[x-1][y-1] = 255
+        img[x][y] = 255
+        return search_line(img, x+1,y)
+    elif(img[x][y+1] != 255):
+        img[x-1][y-1] = 255
+        img[x][y-1] = 255
+        img[x+1][y-1] = 255
+        img[x+1][y] = 255
+        img[x-1][y] = 255
+        img[x][y] = 255
+        return search_line(img, x, y+1)
+    elif(img[x-1][y] != 255):
+        img[x+1][y] = 255
+        img[x][y-1] = 255
+        img[x][y+1] = 255
+        img[x+1][y-1] = 255
+        img[x+1][y+1] = 255
+        img[x][y] = 255
+        return search_line(img, x-1, y)
+    elif(img[x][y-1] != 255):
+        img[x][y+1] = 255
+        img[x+1][y+1] = 255
+        img[x-1][y+1] = 255
+        img[x+1][y] = 255
+        img[x-1][y] = 255
+        img[x][y] = 255
+        return search_line(img, x, y-1)
+    else:
+        img[x][y] = 255
+        img[x+1][y] = 255
+        img[x-1][y] = 255
+        img[x][y-1] = 255
+        img[x][y+1] = 255
+        img[x+1][y-1] = 255
+        img[x+1][y+1] = 255
+        img[x-1][y+1] = 255
+        img[x-1][y-1] = 255
+        return x,y
+
+
 def select_roi(image_orig, image_bin):
 
     im2, contours, hierarchy = cv2.findContours(image_bin.copy(),cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
