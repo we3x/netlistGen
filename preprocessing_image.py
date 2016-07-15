@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import collections
+import math
 from operator import itemgetter
 
 def image_gray(image):
@@ -73,51 +74,48 @@ def clear_component(img, x, y, w, h):
             img[b+j][i+a] = 255
     return img;
 
-def search_line(img, x,y):
-    if(img[x+1][y] != 255):
-        img[x][y-1] = 255
-        img[x][y+1] = 255
-        img[x-1][y] = 255
-        img[x-1][y+1] = 255
-        img[x-1][y-1] = 255
-        img[x][y] = 255
-        return search_line(img, x+1,y)
-    elif(img[x][y+1] != 255):
-        img[x-1][y-1] = 255
-        img[x][y-1] = 255
-        img[x+1][y-1] = 255
-        img[x+1][y] = 255
-        img[x-1][y] = 255
-        img[x][y] = 255
-        return search_line(img, x, y+1)
-    elif(img[x-1][y] != 255):
-        img[x+1][y] = 255
-        img[x][y-1] = 255
-        img[x][y+1] = 255
-        img[x+1][y-1] = 255
-        img[x+1][y+1] = 255
-        img[x][y] = 255
-        return search_line(img, x-1, y)
-    elif(img[x][y-1] != 255):
-        img[x][y+1] = 255
-        img[x+1][y+1] = 255
-        img[x-1][y+1] = 255
-        img[x+1][y] = 255
-        img[x-1][y] = 255
-        img[x][y] = 255
-        return search_line(img, x, y-1)
-    else:
-        img[x][y] = 255
-        img[x+1][y] = 255
-        img[x-1][y] = 255
-        img[x][y-1] = 255
-        img[x][y+1] = 255
-        img[x+1][y-1] = 255
-        img[x+1][y+1] = 255
-        img[x-1][y+1] = 255
-        img[x-1][y-1] = 255
-        return x,y
+def hip(x1,y1,x2,y2):
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
+
+def search_line(img, x,y):
+    distances = [0]
+    dots = [(x,y)]
+    if img[x][y] == 0:
+        img[x][y] = 255
+        u = search_line(img, x+1,y)
+        distances.append(hip(x, y, u[0], u[1]))
+        dots.append(u)
+
+        r = search_line(img, x, y+1)
+        distances.append(hip(x, y, r[0], r[1]))
+        dots.append(r)
+
+        l = search_line(img, x-1, y)
+        distances.append(hip(x, y, l[0], l[1]))
+        dots.append(l)
+
+        d = search_line(img, x, y-1)
+        distances.append(hip(x, y, d[0], d[1]))
+        dots.append(d)
+
+        ur = search_line(img, x+1, y+1)
+        distances.append(hip(x, y, ur[0], ur[1]))
+        dots.append(ur)
+
+        ul = search_line(img, x-1, y+1)
+        distances.append(hip(x, y, ul[0], ul[1]))
+        dots.append(ul)
+
+        dl = search_line(img, x-1, y-1)
+        distances.append(hip(x, y, dl[0], dl[1]))
+        dots.append(dl)
+
+        dr = search_line(img, x+1, y-1)
+        distances.append(hip(x, y, dr[0], dr[1]))
+        dots.append(dr)
+    m = max(distances)
+    return dots[distances.index(m)]
 
 def select_roi(image_orig, image_bin):
 

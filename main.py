@@ -31,11 +31,12 @@ def main():
     img_core_bin_clear = img_core_bin.copy()
     for x,y,w,h in regions:
         img_core_bin_clear = clear_component(img_core_bin_clear, x, y, w, h)
-
-    display_image(img_core_bin_clear)
     dots = []
     x = img_core_bin_clear.shape[0]
     y = img_core_bin_clear.shape[1]
+    img_core_bin_clear = dilate(img_core_bin_clear, 1)
+    plt.subplot(2, 1, 1)
+    plt.imshow(img_core_bin_clear.copy())
     for a in range(x):
         for b in range(y):
             if(img_core_bin_clear[a][b] == 0):
@@ -46,7 +47,10 @@ def main():
         img_core_bin_clear[x][y] = 0
 
 
-    display_image(img_core_bin_clear)
+    plt.subplot(2, 1, 2)
+    plt.imshow(img_core_bin_clear)
+
+    plt.show()
 
 if __name__ == "__main__":
     main()
