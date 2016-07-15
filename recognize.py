@@ -1,5 +1,10 @@
 import cv2
 import numpy as np
+from matplotlib import pyplot as plt
+
+def display_image(image):
+    plt.imshow(image, 'gray')
+    plt.show()
 
 class TooHeigh(Exception):
     def __init__(self):
@@ -17,12 +22,12 @@ class EigenComponentModel(object):
         return self.model
 
     def get_mean(self):
-        mean = self.model.getMat("mean")
+        mean = self.model.getMean()
         return mean.reshape(mean.shape[1])
 
     def get_eigenvectors(self):
-        vectors = self.model.getMat("eigenvectors")
-        return vectors.reshape(vectors.shape[0], vectors.shape[1].transponse())
+        vectors = self.model.getEigenVectors()
+        return vectors.reshape(vectors.shape[0], vectors.shape[1]).T
 
     def project_component(self, component):
         mean = self.get_mean()
@@ -36,16 +41,18 @@ class EigenComponentModel(object):
     def get_scores(self, component, treshold, training=None):
         distances = []
         f = self.project_component(component)
+
         if training == None:
             training = self.images
         for img in training:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             t = self.project_component(img)
             distances.append(np.sqrt(np.sum((f-t)**2)))
         scores = []
         for distance in distances:
             if distance >= treshold:
                 distance = treshold -1
-            scores.append(np.log(treshold - distances) - np.log(treshold))
+            scores.append(np.log(treshold - distance) - np.log(treshold))
         return scores
 
     def score(self, component, ttt, treshold):

@@ -95,4 +95,5 @@ def select_roi(image_orig, image_bin):
     sorted_regions_dic = collections.OrderedDict(sorted(regions_dic.items()))
     sorted_regions = sorted_regions_dic.values()
 
-    return image_orig, sorted_regions, regions
+
+    return image_orig, sorted_regions, region_borders

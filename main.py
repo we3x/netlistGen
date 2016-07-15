@@ -2,7 +2,7 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 from preprocessing_image import image_bin, image_gray, invert, dilate, select_roi
-from recognize import EigenComponentModel, reshape_component
+from recognize import EigenComponentModel
 PATH = './images/tests/test5.png'
 
 def load_image(path):
@@ -29,6 +29,14 @@ def main():
     img_core_selected, component, regions = select_roi(img_core.copy(), img_core_dilate)
 
     eigenModel = EigenComponentModel(train_images, train_labels)
+
+    for x,y,w,h in regions:
+        component = img_core[y:y+h, x:x+w]
+        component = cv2.resize(component, (128,128))
+        component = cv2.cvtColor(component, cv2.COLOR_BGR2GRAY)
+        s = eigenModel.get_scores(component, 100000)
+        print(s)
+
 
     display_image(img_core_selected)
 
