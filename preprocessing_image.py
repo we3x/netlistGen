@@ -65,6 +65,14 @@ def remove_max(borders):
 
     return ret_borders
 
+def clear_component(img, x, y, w, h):
+    a = x
+    b = y
+    for i in range(w):
+        for j in range(h):
+            img[b+j][i+a] = 255
+    return img;
+
 def select_roi(image_orig, image_bin):
 
     im2, contours, hierarchy = cv2.findContours(image_bin.copy(),cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)

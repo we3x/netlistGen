@@ -1,7 +1,7 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-from preprocessing_image import image_bin, image_gray, invert, dilate, select_roi
+from preprocessing_image import image_bin, image_gray, invert, dilate, select_roi, clear_component
 from recognize import EigenComponentModel
 PATH = './images/tests/test5.png'
 
@@ -28,17 +28,12 @@ def main():
     img_core_dilate = dilate(img_core_invert, 1)
     img_core_selected, component, regions = select_roi(img_core.copy(), img_core_dilate)
 
-    eigenModel = EigenComponentModel(train_images, train_labels)
-
+    img_core_bin_clear = img_core_bin.copy()
     for x,y,w,h in regions:
-        component = img_core[y:y+h, x:x+w]
-        component = cv2.resize(component, (128,128))
-        component = cv2.cvtColor(component, cv2.COLOR_BGR2GRAY)
-        s = eigenModel.get_scores(component, 100000)
-        print(s)
+        img_core_bin_clear = clear_component(img_core_bin_clear, x, y, w, h)
 
 
-    display_image(img_core_selected)
+    display_image(img_core_bin)
 
 if __name__ == "__main__":
     main()
