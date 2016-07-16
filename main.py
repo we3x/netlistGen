@@ -1,7 +1,7 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-from preprocessing_image import image_bin, image_gray, invert, dilate, select_roi, clear_component, search_line
+from preprocessing_image import image_bin, image_gray, invert, dilate, select_roi, clear_component, search_line, erode
 from recognize import EigenComponentModel
 PATH = './images/tests/test5.png'
 
@@ -34,20 +34,25 @@ def main():
     dots = []
     x = img_core_bin_clear.shape[0]
     y = img_core_bin_clear.shape[1]
-    img_core_bin_clear = dilate(img_core_bin_clear, 1)
+    img_core_bin_clear = erode(img_core_bin_clear, 3)
     plt.subplot(2, 1, 1)
-    plt.imshow(img_core_bin_clear.copy())
+    plt.imshow(img_core_bin_clear.copy(), 'gray')
     for a in range(x):
         for b in range(y):
             if(img_core_bin_clear[a][b] == 0):
                 dots.append(search_line(img_core_bin_clear, a, b))
 
-    for x,y in dots:
-        print(x,y)
+    for dot in dots:
+        x1,y1 = dot[0]
+        x2,y2 = dot[1]
+        img_core_bin_clear[x1][y1] = 0
+        img_core_bin_clear[x2][y2] = 0
+        print(dot)
+        cv2.line(img_core_bin_clear, (y1,x1), (y2,x2), 0)
 
 
     plt.subplot(2, 1, 2)
-    plt.imshow(img_core_bin_clear)
+    plt.imshow(img_core_bin_clear, 'gray')
 
     plt.show()
 

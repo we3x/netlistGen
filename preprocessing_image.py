@@ -74,55 +74,47 @@ def clear_component(img, x, y, w, h):
             img[b+j][i+a] = 255
     return img;
 
-def hip(a,b):
-    x1,y1 = a
-    x2,y2 = b
-
-    if x2 > x1:
+def hip(x1,y1,x2,y2):
+    if y2 < y1:
         return -math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     else:
         return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-    for x,y in dots:
-        img_core_bin_clear[x][y] = 0
-
-
-def search_line(img, x,y):
+def search_line(img, a, b):
+    theStack = [ (a, b) ]
     distances = [0]
-    dots = [(x,y)]
-    if img[x][y] == 0:
+    dots = [(a,b)]
+    while len(theStack) > 0:
+        x, y = theStack.pop()
+        if img[x][y] == 255:
+            continue
+        distances.append(hip(a,b,x,y))
+        dots.append((x,y))
         img[x][y] = 255
-        u = search_line(img, x+1,y)
-        distances.append(hip(u[0], u[1]))
-        dots.append(u)
-
-        r = search_line(img, x, y+1)
-        distances.append(hip(r[0], r[1]))
-        dots.append(r)
-
-        l = search_line(img, x-1, y)
-        distances.append(hip(l[0], l[1]))
-        dots.append(l)
-
-        d = search_line(img, x, y-1)
-        distances.append(hip(d[0], d[1]))
-        dots.append(d)
-
-        ur = search_line(img, x+1, y+1)
-        distances.append(hip(ur[0], ur[1]))
-        dots.append(ur)
-
-        ul = search_line(img, x-1, y+1)
-        distances.append(hip(ul[0], ul[1]))
-        dots.append(ul)
-
-        dl = search_line(img, x-1, y-1)
-        distances.append(hip(dl[0], dl[1]))
-        dots.append(dl)
-
-        dr = search_line(img, x+1, y-1)
-        distances.append(hip(dr[0], dr[1]))
-        dots.append(dr)
+        theStack.append( (x + 1, y) )
+        theStack.append( (x - 1, y) )
+        theStack.append( (x, y + 1) )
+        theStack.append( (x, y - 1) )
+        theStack.append( (x + 1, y + 1) )
+        theStack.append( (x - 1, y - 1) )
+        theStack.append( (x - 1, y + 1) )
+        theStack.append( (x + 1, y - 1) )
+        theStack.append( (x + 2, y) )
+        theStack.append( (x - 2, y) )
+        theStack.append( (x, y + 2) )
+        theStack.append( (x, y - 2) )
+        theStack.append( (x + 2, y + 2) )
+        theStack.append( (x - 2, y - 2) )
+        theStack.append( (x - 2, y + 2) )
+        theStack.append( (x + 2, y - 2) )
+        theStack.append( (x + 3, y) )
+        theStack.append( (x - 3, y) )
+        theStack.append( (x, y + 3) )
+        theStack.append( (x, y - 3) )
+        theStack.append( (x + 3, y + 3) )
+        theStack.append( (x - 3, y - 3) )
+        theStack.append( (x - 3, y + 3) )
+        theStack.append( (x + 3, y - 3) )
     return (dots[distances.index(max(distances))], dots[distances.index(min(distances))])
 
 def select_roi(image_orig, image_bin):
