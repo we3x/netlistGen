@@ -40,11 +40,10 @@ def main():
     for a in range(x):
         for b in range(y):
             if(img_core_bin_clear[a][b] == 0):
-                dots.append((a,b))
                 dots.append(search_line(img_core_bin_clear, a, b))
 
     for x,y in dots:
-        img_core_bin_clear[x][y] = 0
+        print(x,y)
 
 
     plt.subplot(2, 1, 2)

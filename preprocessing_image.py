@@ -74,8 +74,17 @@ def clear_component(img, x, y, w, h):
             img[b+j][i+a] = 255
     return img;
 
-def hip(x1,y1,x2,y2):
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+def hip(a,b):
+    x1,y1 = a
+    x2,y2 = b
+
+    if x2 > x1:
+        return -math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    else:
+        return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+    for x,y in dots:
+        img_core_bin_clear[x][y] = 0
 
 
 def search_line(img, x,y):
@@ -84,38 +93,37 @@ def search_line(img, x,y):
     if img[x][y] == 0:
         img[x][y] = 255
         u = search_line(img, x+1,y)
-        distances.append(hip(x, y, u[0], u[1]))
+        distances.append(hip(u[0], u[1]))
         dots.append(u)
 
         r = search_line(img, x, y+1)
-        distances.append(hip(x, y, r[0], r[1]))
+        distances.append(hip(r[0], r[1]))
         dots.append(r)
 
         l = search_line(img, x-1, y)
-        distances.append(hip(x, y, l[0], l[1]))
+        distances.append(hip(l[0], l[1]))
         dots.append(l)
 
         d = search_line(img, x, y-1)
-        distances.append(hip(x, y, d[0], d[1]))
+        distances.append(hip(d[0], d[1]))
         dots.append(d)
 
         ur = search_line(img, x+1, y+1)
-        distances.append(hip(x, y, ur[0], ur[1]))
+        distances.append(hip(ur[0], ur[1]))
         dots.append(ur)
 
         ul = search_line(img, x-1, y+1)
-        distances.append(hip(x, y, ul[0], ul[1]))
+        distances.append(hip(ul[0], ul[1]))
         dots.append(ul)
 
         dl = search_line(img, x-1, y-1)
-        distances.append(hip(x, y, dl[0], dl[1]))
+        distances.append(hip(dl[0], dl[1]))
         dots.append(dl)
 
         dr = search_line(img, x+1, y-1)
-        distances.append(hip(x, y, dr[0], dr[1]))
+        distances.append(hip(dr[0], dr[1]))
         dots.append(dr)
-    m = max(distances)
-    return dots[distances.index(m)]
+    return (dots[distances.index(max(distances))], dots[distances.index(min(distances))])
 
 def select_roi(image_orig, image_bin):
 
